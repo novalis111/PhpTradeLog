@@ -1,0 +1,38 @@
+version: '2'
+
+services:
+  ptl_web:
+    image: nginx:alpine
+    restart: always
+    ports:
+      - "8080:80"
+    volumes:
+      - ./html:/var/www/html
+      - ./site.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - phptradelog
+  ptl_php:
+    build: ./docker/php
+    volumes:
+      - ./html:/var/www/html
+    networks:
+      - phptradelog
+  ptl_db:
+    image: mariadb
+    command: mysqld --innodb-buffer-pool-size=20M
+    volumes:
+      - "./data/mysql:/var/lib/mysql:rw"
+    environment:
+      - "MYSQL_DATABASE=ptl"
+      - "MYSQL_USER=ptl"
+      - "MYSQL_PASSWORD=ptl"
+      - "MYSQL_ROOT_PASSWORD=ptlroot"
+    ports:
+      - "3306:3306"
+      - "0.0.0.0:33350:3306"
+    networks:
+      - phptradelog
+
+networks:
+  phptradelog:
+    driver: bridge
