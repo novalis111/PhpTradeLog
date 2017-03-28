@@ -28,9 +28,21 @@ class Template
         return ob_get_clean();
     }
 
-    protected function _getBody()
+    public function getBody()
     {
         return $this->_render($this->_data['body']);
+    }
+
+    public function hasFlash()
+    {
+        return isset($_SESSION['flash']);
+    }
+
+    public function getFlash()
+    {
+        $flashMe = (array)$_SESSION['flash'];
+        unset($_SESSION['flash']);
+        return $flashMe;
     }
 
     public function setData(Array $data)

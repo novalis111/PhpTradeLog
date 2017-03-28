@@ -40,14 +40,20 @@ class Ptl
         }
     }
 
-    public static function url(Array $data = [])
+    public static function redirect($page = false, $data = [])
+    {
+        header('Location: ' . self::url($data));
+        exit;
+    }
+
+    public static function url($page = false, Array $data = [])
     {
         $href = PTL_URL . 'index.php';
         $parts = [];
-        if ($data['page']) {
-            $parts[] = 'p=' . $data['page'];
+        if ($page) {
+            $parts[] = 'p=' . $page;
         }
-        if ($data['action']) {
+        if (isset($data['action'])) {
             $parts[] = 'a=' . $data['action'];
         }
         if (count($parts)) {
@@ -74,6 +80,7 @@ class Ptl
 
     public function bootstrap()
     {
+        session_start(['cookie_lifetime' => 86400]);
         $version = $this->_db->query("SELECT `value` AS version FROM `config` WHERE `key` = 'version'");
         if (!$version instanceof mysqli_result) {
             // No version on DB set, init it

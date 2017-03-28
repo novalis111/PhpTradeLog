@@ -13,7 +13,10 @@ class IndexController extends AbstractController
         switch ($_GET['a']) {
             default:
                 echo $this->_tpl
-                    ->setData(['trades' => []])
+                    ->setData([
+                        'trades' => [],
+                        'title'  => 'Tradelog',
+                    ])
                     ->getHtml('index/index');
                 break;
         }
