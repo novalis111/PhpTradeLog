@@ -41,7 +41,9 @@
         <li role="presentation"><a href="<?= Ptl::url('import') ?>">Import</a></li>
     </ul>
     <?php if ($this->hasFlash()): foreach ($this->getFlash() as $flash): ?>
-        <div class="alert alert-info" role="alert"><?= $flash ?></div>
+        <div class="alert alert-info" role="alert">
+            <p><?= $flash ?></p>
+        </div>
     <?php endforeach; endif; ?>
     <div class="page-header">
         <h1><?= $this->title ?></h1>
