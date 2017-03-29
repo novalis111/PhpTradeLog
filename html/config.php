@@ -16,14 +16,16 @@ define('PTL_TPL_ROOT', PTL_ROOT . 'templates' . DS . PTL_TPL);
 /**
  * Include used classes
  */
-if ($handle = opendir(PTL_ROOT . 'classes')) {
-    while (false !== ($entry = readdir($handle))) {
-        if (strpos($entry, '.php') !== false) {
-            /** @noinspection PhpIncludeInspection */
-            require(PTL_ROOT . 'classes' . DS . $entry);
+foreach (['classes', 'classes' . DS . 'Importer'] as $incPath) {
+    if ($handle = opendir(PTL_ROOT . $incPath)) {
+        while (false !== ($entry = readdir($handle))) {
+            if (strpos($entry, '.php') !== false) {
+                /** @noinspection PhpIncludeInspection */
+                require(PTL_ROOT . $incPath . DS . $entry);
+            }
         }
+        closedir($handle);
     }
-    closedir($handle);
 }
 
 /**

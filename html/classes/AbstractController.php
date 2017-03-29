@@ -1,13 +1,12 @@
 <?php
 
-abstract class AbstractController
+abstract class AbstractController extends AbstractPtl
 {
-    protected $_db;
     protected $_tpl;
 
     public function __construct()
     {
-        $this->_db = mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+        $this->_init();
         $this->_tpl = new Template();
     }
 
@@ -15,7 +14,7 @@ abstract class AbstractController
 
     protected function _sanitizeRequest()
     {
-        if ($_GET['p'] && !in_array($_GET['p'], Ptl::getInstance()->getRoutes())) {
+        if (isset($_GET['p']) && !in_array($_GET['p'], Ptl::getInstance()->getRoutes())) {
             throw new Exception("Invalid route: " . $_GET['p']);
         }
     }

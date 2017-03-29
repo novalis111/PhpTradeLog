@@ -1,9 +1,8 @@
 <?php
 
-class Ptl
+class Ptl extends AbstractPtl
 {
     private static $_instance;
-    protected $_db;
     protected $_routes;
 
     /**
@@ -11,7 +10,7 @@ class Ptl
      */
     private function __construct()
     {
-        $this->_db = mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+        $this->_init();
     }
 
     public static function getInstance()
@@ -25,7 +24,8 @@ class Ptl
     public static function route()
     {
         try {
-            switch ($_GET['p']) {
+            $page = isset($_GET['p']) ? (string)$_GET['p'] : false;
+            switch ($page) {
                 case 'import':
                     $ct = new ImportController();
                     break;
@@ -42,7 +42,7 @@ class Ptl
 
     public static function redirect($page = false, $data = [])
     {
-        header('Location: ' . self::url($data));
+        header('Location: ' . self::url($page, $data));
         exit;
     }
 

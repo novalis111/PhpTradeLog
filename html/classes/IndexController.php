@@ -10,7 +10,8 @@ class IndexController extends AbstractController
     public function handleRequest()
     {
         $this->_sanitizeRequest();
-        switch ($_GET['a']) {
+        $action = isset($_GET['a']) ? (string)$_GET['a'] : false;
+        switch ($action) {
             default:
                 echo $this->_tpl
                     ->setData([

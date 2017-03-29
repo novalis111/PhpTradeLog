@@ -1,13 +1,14 @@
-<form method="post" action="<?= Ptl::url('import') ?>">
+<form enctype="multipart/form-data" method="post" action="<?= Ptl::url('import') ?>">
     <div class="form-group">
-        <label for="trade_csv">CSV File:</label>
-        <input type="file" class="form-control" name="trade_csv" id="trade_csv"/>
+        <label for="trades_file">File:</label>
+        <input type="file" class="form-control" name="trades_file" id="trades_file"/>
     </div>
     <div class="form-group">
-        <label for="csv_format">File Format:</label>
-        <select class="form-control" id="csv_format" name="csv_format">
+        <label for="trades_format">Format:</label>
+        <select class="form-control" id="trades_format" name="trades_format">
             <option value="dastrader_report" selected="selected">DASTrader Pro Report</option>
         </select>
     </div>
+    <input type="hidden" name="action" value="import_trades"/>
     <button type="submit" class="btn btn-default">Import File</button>
 </form>
