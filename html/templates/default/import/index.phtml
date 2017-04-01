@@ -9,6 +9,14 @@
             <option value="dastrader_report" selected="selected">DASTrader Pro Report</option>
         </select>
     </div>
+    <div class="form-group">
+        <label for="account_id">Account:</label>
+        <select class="form-control" id="account_id" name="account_id">
+            <?php foreach (Ptl::app()->getConfig('accounts') as $id => $token): ?>
+                <option value="<?= $id ?>"><?= $token ?></option>
+            <?php endforeach; ?>
+        </select>
+    </div>
     <input type="hidden" name="action" value="import_trades"/>
     <button type="submit" class="btn btn-default">Import File</button>
 </form>

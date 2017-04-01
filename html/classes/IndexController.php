@@ -4,7 +4,7 @@ class IndexController extends AbstractController
 {
     public function error(Exception $e)
     {
-        echo $this->_tpl->setData(['error' => $e->getMessage()])->getHtml('index/error');
+        echo $this->_tpl->setData(['title' => 'Error', 'error' => $e->getMessage()])->getHtml('index/error');
     }
 
     public function handleRequest()

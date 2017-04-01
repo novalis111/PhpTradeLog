@@ -4,6 +4,7 @@ class Ptl extends AbstractPtl
 {
     private static $_instance;
     protected $_routes;
+    protected $_config = [];
 
     /**
      * Ptl constructor. Singleton
@@ -13,7 +14,7 @@ class Ptl extends AbstractPtl
         $this->_init();
     }
 
-    public static function getInstance()
+    public static function app()
     {
         if (!self::$_instance instanceof Ptl) {
             self::$_instance = new Ptl();
@@ -23,21 +24,16 @@ class Ptl extends AbstractPtl
 
     public static function route()
     {
-        try {
-            $page = isset($_GET['p']) ? (string)$_GET['p'] : false;
-            switch ($page) {
-                case 'import':
-                    $ct = new ImportController();
-                    break;
-                default:
-                    $ct = new IndexController();
-                    break;
-            }
-            $ct->handleRequest();
-        } catch (Exception $e) {
-            $ct = new IndexController();
-            $ct->error($e);
+        $page = isset($_GET['p']) ? (string)$_GET['p'] : false;
+        switch ($page) {
+            case 'import':
+                $ct = new ImportController();
+                break;
+            default:
+                $ct = new IndexController();
+                break;
         }
+        $ct->handleRequest();
     }
 
     public static function redirect($page = false, $data = [])
@@ -62,10 +58,18 @@ class Ptl extends AbstractPtl
         return $href;
     }
 
-    public function setRoutes($routes)
+    public function setConfig($key, $value)
     {
-        $this->_routes = $routes;
+        $this->_config[$key] = $value;
         return $this;
+    }
+
+    public function getConfig($key)
+    {
+        if (isset($this->_config[$key])) {
+            return $this->_config[$key];
+        }
+        return null;
     }
 
     public function getRoutes()
@@ -89,19 +93,30 @@ class Ptl extends AbstractPtl
             // Check if DB needs migration
             $version = (int)$version->fetch_assoc()['version'];
         }
+        $this->_routes = ['index', 'import'];
+        // Accounts + Brokers
+        foreach ($this->_db->query("SELECT * FROM `accounts`") as $row) {
+            $broker = new Broker();
+            $this->_config['accounts'][$row['id']] = [
+                'token'  => $row['token'],
+                'broker' => $broker->load($row['broker_id']),
+            ];
+        }
     }
 
     private function _initDb()
     {
-        $initFile = PTL_ROOT . 'assets' . DS . 'db' . DS . 'db_init.sql';
-        $handle = fopen($initFile, "r");
-        $sql = explode(';', fread($handle, filesize($initFile)));
-        foreach ($sql as $query) {
-            if (trim($query) == '') {
-                continue;
-            }
-            $this->_db->query($query);
+        $initFile = PTL_ROOT . 'assets' . DS . 'db' . DS . 'init.sql';
+        if (!is_file($initFile)) {
+            throw new Exception("DB Init File not found: $initFile");
         }
-        fclose($handle);
+        try {
+            $this->_db->begin_transaction();
+            $this->_db->real_query(file_get_contents($initFile));
+            $this->_db->commit();
+        } catch (Exception $e) {
+            $this->_db->rollback();
+            throw $e;
+        }
     }
 }

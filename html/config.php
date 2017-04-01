@@ -10,7 +10,6 @@ define('DB_NAME', 'ptl');
 /*
  * DO NOT EDIT BELOW THIS LINE
  */
-$routes = ['index', 'import'];
 define('PTL_TPL_ROOT', PTL_ROOT . 'templates' . DS . PTL_TPL);
 
 /**
@@ -27,8 +26,3 @@ foreach (['classes', 'classes' . DS . 'Importer'] as $incPath) {
         closedir($handle);
     }
 }
-
-/**
- * Bootstrap
- */
-Ptl::getInstance()->setRoutes($routes);

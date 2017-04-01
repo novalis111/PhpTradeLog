@@ -14,7 +14,7 @@ abstract class AbstractController extends AbstractPtl
 
     protected function _sanitizeRequest()
     {
-        if (isset($_GET['p']) && !in_array($_GET['p'], Ptl::getInstance()->getRoutes())) {
+        if (isset($_GET['p']) && !in_array($_GET['p'], Ptl::app()->getRoutes())) {
             throw new Exception("Invalid route: " . $_GET['p']);
         }
     }
